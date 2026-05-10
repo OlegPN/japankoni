@@ -14,7 +14,6 @@ import { loadCompletedLessons } from "@/lib/progress";
 
 // Сцены, которые ещё не сделаны — показываем как «coming soon»
 const COMING_SOON: Array<{ title: string; subtitle: string; image: string }> = [
-  { title: "Идзакая",       subtitle: "Вежливый отказ среди друзей", image: "/scenes/izakaya.png" },
   { title: "Рамэн-бар",     subtitle: "Все темы вместе: は・を・です", image: "/scenes/ramen-bar.png" },
 ];
 
