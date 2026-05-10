@@ -6,6 +6,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import PhoneFrame from "@/components/PhoneFrame";
 import { audioFor, getCard, getListenChoices, ReviewCard } from "@/lib/cards";
 import { aiTurn, buildSystemPrompt, ChatMessage, isAiAvailable } from "@/lib/talk";
+import StrokeWriter from "@/components/StrokeWriter";
 import { Deck, dueIds, ensureCard, loadDeck, review, saveDeck } from "@/lib/srs";
 import { bumpStreak, loadProfile, saveProfile } from "@/lib/profile";
 import { Lesson, LESSONS } from "@/lib/lessons";
@@ -118,6 +119,8 @@ function ReviewPhase({ phaseInfo, onDone }: { phaseInfo: LearningPhase; onDone: 
   const [cardMode, setCardMode] = useState<CardMode>("visual");
   // Кэшируем listen-варианты на текущей карточке (чтобы не пересчитывались на каждый рендер)
   const [listenChoices, setListenChoices] = useState<string[]>([]);
+  // Открыт ли модал начертания + для какого знака
+  const [strokeChar, setStrokeChar] = useState<string | null>(null);
 
   useEffect(() => {
     const d = loadDeck();
@@ -206,8 +209,9 @@ function ReviewPhase({ phaseInfo, onDone }: { phaseInfo: LearningPhase; onDone: 
   // Этап «знакомство»: показываем символ + ответ + мнемонику
   if (stage === "learn") {
     const isHiragana = current.kind === "hiragana";
+    const canDraw = isSingleCharCard(current);
     return (
-      <div className="flex flex-col h-full">
+      <div className="flex flex-col h-full relative">
         <PhaseHeader phaseIdx={0} label={`Фаза 1 · Знакомство · ${idx + 1}/${queue.length}`} progress={progressPct} />
 
         <div className="text-center mb-2">
@@ -223,7 +227,17 @@ function ReviewPhase({ phaseInfo, onDone }: { phaseInfo: LearningPhase; onDone: 
             <div className="text-[11px] uppercase tracking-widest text-muted font-bold">{isHiragana ? "Читается как" : "Значит"}</div>
             <div className="text-3xl font-extrabold mt-1" style={{ color: "var(--primary)" }}>{current.answer}</div>
           </div>
-          <div className="absolute top-3 right-3"><AudioButton src={audioFor(current)} autoPlay /></div>
+          <div className="absolute top-3 right-3 flex flex-col gap-2">
+            <AudioButton src={audioFor(current)} autoPlay />
+            {canDraw && (
+              <button
+                onClick={() => setStrokeChar(current.prompt)}
+                className="inline-flex items-center justify-center w-10 h-10 rounded-full"
+                style={{ background: "var(--primary-soft)", color: "var(--primary)", border: "1px solid var(--primary-soft)" }}
+                aria-label="Прописать"
+              ><span style={{ fontSize: 16 }}>🖌</span></button>
+            )}
+          </div>
         </div>
 
         <div className="rounded-xl p-3.5 text-sm leading-relaxed flex gap-3 items-start" style={{ background: "var(--success-soft)", borderLeft: "3px solid var(--success)" }}>
@@ -239,6 +253,8 @@ function ReviewPhase({ phaseInfo, onDone }: { phaseInfo: LearningPhase; onDone: 
         <button onClick={() => setStage("test")} className="rounded-xl py-3.5 font-bold text-white mt-3" style={{ background: "var(--primary)" }}>
           Запомнил, проверь меня →
         </button>
+
+        {strokeChar && <StrokeWriter char={strokeChar} onClose={() => setStrokeChar(null)} />}
       </div>
     );
   }
@@ -252,7 +268,7 @@ function ReviewPhase({ phaseInfo, onDone }: { phaseInfo: LearningPhase; onDone: 
   const isJapaneseChoices = isListen; // в listen-режиме варианты — иероглифы/кана, нужен JP-шрифт
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full relative">
       <PhaseHeader phaseIdx={0} label={`Фаза 1 · ${isNew ? "Проверка" : "Повтор"} · ${idx + 1}/${queue.length}${isListen ? " · 🎧" : ""}`} progress={progressPct} />
 
       <div key={current.id + (isListen ? ":L" : ":V")} className="rounded-3xl p-8 text-center my-3 fade-in relative" style={{ background: "var(--surface)", border: "1px solid var(--border)", boxShadow: "0 4px 12px rgba(232,93,117,0.08)" }}>
@@ -274,9 +290,19 @@ function ReviewPhase({ phaseInfo, onDone }: { phaseInfo: LearningPhase; onDone: 
         ) : (
           <div className="text-[110px] font-semibold leading-none py-2" style={{ fontFamily: '"Noto Sans JP", system-ui' }}>{current.prompt}</div>
         )}
-        {/* После ответа разрешаем услышать ещё раз */}
+        {/* После ответа разрешаем услышать ещё раз + прописать */}
         {answerState !== "idle" && !isListen && (
-          <div className="absolute top-3 right-3"><AudioButton src={audioFor(current)} autoPlay /></div>
+          <div className="absolute top-3 right-3 flex flex-col gap-2">
+            <AudioButton src={audioFor(current)} autoPlay />
+            {isSingleCharCard(current) && (
+              <button
+                onClick={() => setStrokeChar(current.prompt)}
+                className="inline-flex items-center justify-center w-10 h-10 rounded-full"
+                style={{ background: "var(--primary-soft)", color: "var(--primary)", border: "1px solid var(--primary-soft)" }}
+                aria-label="Прописать"
+              ><span style={{ fontSize: 16 }}>🖌</span></button>
+            )}
+          </div>
         )}
       </div>
 
@@ -334,8 +360,15 @@ function ReviewPhase({ phaseInfo, onDone }: { phaseInfo: LearningPhase; onDone: 
             : "Следующая →"}
         </button>
       )}
+
+      {strokeChar && <StrokeWriter char={strokeChar} onClose={() => setStrokeChar(null)} />}
     </div>
   );
+}
+
+// Карточка с одним символом (хирагана/катакана/кандзи) — для неё доступно начертание
+function isSingleCharCard(c: ReviewCard): boolean {
+  return c.kind === "hiragana" || c.kind === "katakana" || c.kind === "kanji" || c.kind === "kanji-on" || c.kind === "kanji-kun";
 }
 
 // ============== AUDIO BUTTON ==============
