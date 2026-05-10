@@ -1,0 +1,47 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #FFF8F5;
+  --surface: #FFFFFF;
+  --border: #FFD9D0;
+  --text: #2A1F1B;
+  --text-muted: #8A7368;
+  --primary: #E85D75;
+  --primary-hover: #D14A62;
+  --primary-soft: #FFE4DC;
+  --primary-soft-text: #B83955;
+  --success: #6B8E4E;
+  --success-soft: #E8EDD8;
+}
+
+html.dark {
+  --bg: #1A1416;
+  --surface: #2A2125;
+  --border: #3D2F33;
+  --text: #FFE8E0;
+  --text-muted: #A89089;
+  --primary: #FF6B85;
+  --primary-hover: #FF8AA0;
+  --primary-soft: #3D2F33;
+  --primary-soft-text: #FFB5C2;
+  --success: #A3C470;
+  --success-soft: #2D3322;
+}
+
+html, body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, system-ui, "Noto Sans JP", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+* { box-sizing: border-box; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in { animation: fadeIn 0.25s ease-out; }

@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "KONI dev (Next.js)",
+      "runtimeExecutable": "sh",
+      "runtimeArgs": ["-c", "cd prototype && npm run dev"],
+      "port": 3000
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "appId": "com.koni.app",
+  "appName": "KONI",
+  "webDir": "out",
+  "android": {
+    "allowMixedContent": false,
+    "captureInput": true
+  },
+  "server": {
+    "androidScheme": "https"
+  }
+}

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>KONI — палитры (выбрана: Sakura + Sumi)</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, system-ui, sans-serif; background: #f5f5f7; color: #1d1d1f; padding: 40px 20px; line-height: 1.5; }
+  .container { max-width: 1100px; margin: 0 auto; }
+  h1 { font-size: 28px; margin-bottom: 8px; }
+  .lead { color: #6e6e73; margin-bottom: 40px; }
+  .palette { background: #fff; border-radius: 16px; padding: 24px; margin-bottom: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+  .palette.chosen { border: 2px solid #E85D75; background: #FFF8F5; }
+  .palette h2 { font-size: 20px; margin-bottom: 4px; }
+  .badge { display: inline-block; padding: 3px 10px; background: #E85D75; color: #fff; font-size: 11px; font-weight: 700; border-radius: 999px; text-transform: uppercase; letter-spacing: 1.5px; margin-left: 8px; }
+  .palette .desc { color: #6e6e73; font-size: 14px; margin-bottom: 20px; }
+  .modes { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 720px) { .modes { grid-template-columns: 1fr; } }
+  .mode-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #8e8e93; padding: 8px 12px 0; }
+  .mock { padding: 20px; min-height: 240px; border-radius: 12px; display: flex; flex-direction: column; gap: 12px; }
+  .mock .top { display: flex; justify-content: space-between; }
+  .mock .logo { font-weight: 700; }
+  .mock .card { border-radius: 12px; padding: 16px; }
+  .mock .kana { font-size: 56px; font-weight: 600; text-align: center; padding: 12px 0; }
+  .mock .label { font-size: 12px; opacity: 0.6; text-align: center; }
+  .mock .btns { display: flex; gap: 8px; }
+  .mock button { flex: 1; border: none; padding: 10px; border-radius: 10px; font-weight: 600; font-size: 13px; }
+  .swatches { display: flex; gap: 6px; margin-top: 12px; }
+  .swatch { flex: 1; height: 32px; border-radius: 6px; display: flex; align-items: end; justify-content: center; font-size: 9px; padding-bottom: 3px; color: rgba(255,255,255,0.85); font-family: monospace; }
+  .swatch.lt { color: rgba(0,0,0,0.7); }
+
+  .p1-light { background: #FFF8F5; color: #2A1F1B; }
+  .p1-light .card { background: #fff; border: 1px solid #FFD9D0; }
+  .p1-light .btn-primary { background: #E85D75; color: #fff; }
+  .p1-light .btn-secondary { background: #FFE4DC; color: #B83955; }
+  .p1-dark { background: #1A1416; color: #FFE8E0; }
+  .p1-dark .card { background: #2A2125; border: 1px solid #3D2F33; }
+  .p1-dark .btn-primary { background: #FF6B85; color: #1A1416; }
+  .p1-dark .btn-secondary { background: #3D2F33; color: #FFB5C2; }
+
+  .p2-light { background: #FAFAFB; color: #0F172A; }
+  .p2-light .card { background: #fff; border: 1px solid #E5E7EB; }
+  .p2-light .btn-primary { background: #4F46E5; color: #fff; }
+  .p2-light .btn-secondary { background: #EEF2FF; color: #4338CA; }
+  .p2-dark { background: #0B0F1A; color: #E2E8F0; }
+  .p2-dark .card { background: #141B2D; border: 1px solid #1F2A44; }
+  .p2-dark .btn-primary { background: #818CF8; color: #0B0F1A; }
+  .p2-dark .btn-secondary { background: #1F2A44; color: #A5B4FC; }
+
+  .p3-light { background: #F8F4FF; color: #1A0B2E; }
+  .p3-light .card { background: #fff; border: 1px solid #E0D4F7; }
+  .p3-light .btn-primary { background: #9333EA; color: #fff; }
+  .p3-light .btn-secondary { background: #FCE7F3; color: #BE185D; }
+  .p3-dark { background: #0B0419; color: #F0E6FF; }
+  .p3-dark .card { background: #1A0B2E; border: 1px solid #2D1B4E; }
+  .p3-dark .btn-primary { background: linear-gradient(135deg, #EC4899, #8B5CF6); color: #fff; }
+  .p3-dark .btn-secondary { background: #2D1B4E; color: #F0ABFC; }
+
+  .p4-light { background: #F7F5EE; color: #2A2620; }
+  .p4-light .card { background: #FFFDF6; border: 1px solid #E8E3D0; }
+  .p4-light .btn-primary { background: #6B8E4E; color: #fff; }
+  .p4-light .btn-secondary { background: #E8EDD8; color: #4A6635; }
+  .p4-dark { background: #1C1F18; color: #E8E5D6; }
+  .p4-dark .card { background: #262A21; border: 1px solid #353A2D; }
+  .p4-dark .btn-primary { background: #A3C470; color: #1C1F18; }
+  .p4-dark .btn-secondary { background: #353A2D; color: #C9DA9B; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>KONI — варианты палитр</h1>
+  <p class="lead">Выбрана палитра 1 (Sakura + Sumi). Остальные оставлены для истории решений.</p>
+
+  <div class="palette chosen">
+    <h2>1. Sakura + Sumi (сакура + уголь) <span class="badge">Выбрана</span></h2>
+    <p class="desc">Тёплая, романтичная, "японская". Ассоциация с весной, цветами сакуры. Эмоциональная зацепка для сегмента A.</p>
+    <div class="modes">
+      <div>
+        <div class="mode-label">Light</div>
+        <div class="mock p1-light">
+          <div class="top"><span class="logo">🐴 KONI</span><span>🔥 7</span></div>
+          <div class="card"><div class="label">ХИРАГАНА</div><div class="kana">あ</div><div class="label">a</div></div>
+          <div class="btns"><button class="btn-secondary">Пропустить</button><button class="btn-primary">Знаю</button></div>
+        </div>
+        <div class="swatches">
+          <div class="swatch lt" style="background:#FFF8F5">#FFF8F5</div>
+          <div class="swatch" style="background:#E85D75">#E85D75</div>
+          <div class="swatch lt" style="background:#FFD9D0">#FFD9D0</div>
+          <div class="swatch" style="background:#2A1F1B">#2A1F1B</div>
+        </div>
+      </div>
+      <div>
+        <div class="mode-label">Dark</div>
+        <div class="mock p1-dark">
+          <div class="top"><span class="logo">🐴 KONI</span><span>🔥 7</span></div>
+          <div class="card"><div class="label">ХИРАГАНА</div><div class="kana">あ</div><div class="label">a</div></div>
+          <div class="btns"><button class="btn-secondary">Пропустить</button><button class="btn-primary">Знаю</button></div>
+        </div>
+        <div class="swatches">
+          <div class="swatch" style="background:#1A1416">#1A1416</div>
+          <div class="swatch" style="background:#FF6B85">#FF6B85</div>
+          <div class="swatch" style="background:#3D2F33">#3D2F33</div>
+          <div class="swatch lt" style="background:#FFE8E0">#FFE8E0</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="palette">
+    <h2>2. Indigo Minimal</h2>
+    <p class="desc">Не выбрана. Чистый Linear/Notion-стиль, но эмоционально холодный.</p>
+    <div class="modes">
+      <div><div class="mock p2-light"><div class="top"><span class="logo">🐴 KONI</span><span>🔥 7</span></div><div class="card"><div class="label">ХИРАГАНА</div><div class="kana">あ</div></div><div class="btns"><button class="btn-secondary">Skip</button><button class="btn-primary">Know</button></div></div></div>
+      <div><div class="mock p2-dark"><div class="top"><span class="logo">🐴 KONI</span><span>🔥 7</span></div><div class="card"><div class="label">ХИРАГАНА</div><div class="kana">あ</div></div><div class="btns"><button class="btn-secondary">Skip</button><button class="btn-primary">Know</button></div></div></div>
+    </div>
+  </div>
+
+  <div class="palette">
+    <h2>3. Neo Tokyo</h2>
+    <p class="desc">Не выбрана. Кибер-панк — слишком утомляет на длинных сессиях.</p>
+    <div class="modes">
+      <div><div class="mock p3-light"><div class="top"><span class="logo">🐴 KONI</span><span>🔥 7</span></div><div class="card"><div class="label">ХИРАГАНА</div><div class="kana">あ</div></div><div class="btns"><button class="btn-secondary">Skip</button><button class="btn-primary">Know</button></div></div></div>
+      <div><div class="mock p3-dark"><div class="top"><span class="logo">🐴 KONI</span><span>🔥 7</span></div><div class="card"><div class="label">ХИРАГАНА</div><div class="kana">あ</div></div><div class="btns"><button class="btn-secondary">Skip</button><button class="btn-primary">Know</button></div></div></div>
+    </div>
+  </div>
+
+  <div class="palette">
+    <h2>4. Matcha + Washi</h2>
+    <p class="desc">Не выбрана. Спокойная и природная, но менее виральная для соцсетей.</p>
+    <div class="modes">
+      <div><div class="mock p4-light"><div class="top"><span class="logo">🐴 KONI</span><span>🔥 7</span></div><div class="card"><div class="label">ХИРАГАНА</div><div class="kana">あ</div></div><div class="btns"><button class="btn-secondary">Skip</button><button class="btn-primary">Know</button></div></div></div>
+      <div><div class="mock p4-dark"><div class="top"><span class="logo">🐴 KONI</span><span>🔥 7</span></div><div class="card"><div class="label">ХИРАГАНА</div><div class="kana">あ</div></div><div class="btns"><button class="btn-secondary">Skip</button><button class="btn-primary">Know</button></div></div></div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

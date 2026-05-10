@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>KONI — маскот Кони</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, system-ui, sans-serif;
+    background: linear-gradient(180deg, #faf2ee 0%, #f5e6e0 100%);
+    color: #2A1F1B; padding: 40px 20px 80px; min-height: 100vh;
+  }
+  body.dark { background: linear-gradient(180deg, #0f0a0c 0%, #1a1115 100%); color: #FFE8E0; }
+  .wrap { max-width: 1100px; margin: 0 auto; }
+  h1 { font-size: 28px; margin-bottom: 6px; }
+  .lead { color: #8A7368; margin-bottom: 32px; }
+  body.dark .lead { color: #A89089; }
+  .toggle { background: #fff; border: 1px solid #FFD9D0; color: #2A1F1B; padding: 8px 16px; border-radius: 999px; font-weight: 600; cursor: pointer; font-size: 13px; margin-bottom: 24px; }
+  body.dark .toggle { background: #2A2125; border-color: #3D2F33; color: #FFE8E0; }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; margin-bottom: 40px; }
+  .pose { background: #fff; border: 1px solid #FFD9D0; border-radius: 20px; padding: 24px; text-align: center; box-shadow: 0 1px 3px rgba(232,93,117,0.08), 0 4px 12px rgba(232,93,117,0.06); }
+  body.dark .pose { background: #2A2125; border-color: #3D2F33; }
+  .pose img { width: 180px; height: 180px; object-fit: contain; }
+  .pose-label { font-size: 12px; text-transform: uppercase; letter-spacing: 1.5px; color: #B83955; font-weight: 700; margin-top: 12px; }
+  body.dark .pose-label { color: #FFB5C2; }
+  .pose-desc { font-size: 12px; color: #8A7368; margin-top: 4px; }
+  body.dark .pose-desc { color: #A89089; }
+  .bg-koni { background: radial-gradient(circle at 50% 50%, #FFE4DC 0%, #fff 70%); border-radius: 50%; padding: 8px; display: inline-block; }
+  body.dark .bg-koni { background: radial-gradient(circle at 50% 50%, #3D2F33 0%, #2A2125 70%); }
+
+  .sizes { display: flex; align-items: end; gap: 32px; padding: 24px; background: #fff; border: 1px solid #FFD9D0; border-radius: 20px; flex-wrap: wrap; justify-content: center; margin-bottom: 32px; }
+  body.dark .sizes { background: #2A2125; border-color: #3D2F33; }
+  .size-block { text-align: center; }
+  .size-block img { display: block; margin: 0 auto 8px; object-fit: contain; }
+  .size-label { font-size: 11px; color: #8A7368; }
+
+  .prompt-box { background: #2A2125; color: #FFE8E0; border-radius: 16px; padding: 20px; margin-bottom: 24px; font-family: ui-monospace, monospace; font-size: 13px; line-height: 1.6; white-space: pre-wrap; }
+  .prompt-box .label { color: #FF6B85; font-weight: 700; font-family: -apple-system, sans-serif; font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; }
+
+  .notes { background: #fff; border: 1px solid #FFD9D0; border-radius: 16px; padding: 20px; }
+  body.dark .notes { background: #2A2125; border-color: #3D2F33; }
+  .notes h3 { font-size: 16px; margin-bottom: 10px; }
+  .notes ul { padding-left: 20px; line-height: 1.7; font-size: 14px; }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <h1>Кони — маскот в чиби-стиле Ghibli</h1>
+  <p class="lead">Финальные иллюстрации (AI-generated, ChatGPT image). Готовы к подключению в продукт.</p>
+  <button class="toggle" onclick="document.body.classList.toggle('dark')">Переключить тему</button>
+
+  <h3 style="margin-bottom:16px;">Эмоциональные позы</h3>
+  <div class="grid">
+
+    <div class="pose">
+      <div class="bg-koni"><img src="img/koni/koni-default.png" alt="Default"></div>
+      <div class="pose-label">Default · Greeting</div>
+      <div class="pose-desc">Главный экран, онбординг</div>
+    </div>
+
+    <div class="pose">
+      <div class="bg-koni"><img src="img/koni/koni-happy.png" alt="Happy"></div>
+      <div class="pose-label">Happy · Celebration</div>
+      <div class="pose-desc">Правильный ответ, milestone, anime moment</div>
+    </div>
+
+    <div class="pose">
+      <div class="bg-koni"><img src="img/koni/koni-thinking.png" alt="Thinking"></div>
+      <div class="pose-label">Thinking · Hint</div>
+      <div class="pose-desc">Подсказка, объяснение грамматики</div>
+    </div>
+
+    <div class="pose">
+      <div class="bg-koni"><img src="img/koni/koni-surprised.png" alt="Surprised"></div>
+      <div class="pose-label">Surprised · New material</div>
+      <div class="pose-desc">Подсказка, новый урок</div>
+    </div>
+
+    <div class="pose">
+      <div class="bg-koni"><img src="img/koni/koni-sleeping.png" alt="Sleeping"></div>
+      <div class="pose-label">Sleeping · Streak Freeze</div>
+      <div class="pose-desc">"Сегодня отдыхаем" — замораживает стрик без вины</div>
+    </div>
+
+    <div class="pose">
+      <div class="bg-koni"><img src="img/koni/koni-icon.png" alt="Icon" style="border-radius:24px;"></div>
+      <div class="pose-label">App Icon</div>
+      <div class="pose-desc">Иконка приложения для App Store / Play</div>
+    </div>
+
+  </div>
+
+  <h3 style="margin-bottom:16px;">Размеры в UI</h3>
+  <div class="sizes">
+    <div class="size-block"><img src="img/koni/koni-icon.png" width="32" height="32" style="border-radius:6px;"><div class="size-label">32px (favicon)</div></div>
+    <div class="size-block"><img src="img/koni/koni-icon.png" width="64" height="64" style="border-radius:12px;"><div class="size-label">64px (header)</div></div>
+    <div class="size-block"><img src="img/koni/koni-default.png" width="120" height="120"><div class="size-label">120px (avatar)</div></div>
+    <div class="size-block"><img src="img/koni/koni-default.png" width="200" height="200"><div class="size-label">200px (hero)</div></div>
+  </div>
+
+  <h3 style="margin-bottom:12px;">Промпт, по которому был сгенерирован Кони</h3>
+  <div class="prompt-box"><span class="label">Главный (full-body):</span>
+chibi horse mascot character, Studio Ghibli art style, Hayao Miyazaki aesthetic, soft watercolor painting, hand-drawn anime, big expressive black eyes with white highlights, flowing dark brown mane in Ghibli style, warm cream and peach coat, gentle smile, small pink cheek blush, friendly pose waving hello, wearing a tiny indigo hakama, soft pastel background with cherry blossoms, warm sakura pink and beige palette, transparent background, character sheet, full body, high detail, 2D illustration, clean lineart, --ar 1:1 --style raw
+
+<span class="label">Эмоции (sticker pack):</span>
+same horse character, four expressions: 1) happy celebrating with raised hooves and sparkles 2) thinking with paw on chin and question mark 3) sleeping curled up with z's 4) confused tilted head, Ghibli style, transparent background, sticker sheet layout
+
+<span class="label">Иконка приложения:</span>
+chibi Ghibli horse face only, frontal symmetric portrait, big round black eyes, soft cream coat, dark mane framing the face, minimal background, app icon style, rounded square composition, sakura pink soft glow, --ar 1:1
+  </div>
+
+  <div class="notes">
+    <h3>📌 Файлы маскота</h3>
+    <ul>
+      <li><code>img/koni/koni-default.png</code> — full-body, машет привет (онбординг, hero)</li>
+      <li><code>img/koni/koni-happy.png</code> — радостный с искрами (правильный ответ, anime moment)</li>
+      <li><code>img/koni/koni-thinking.png</code> — задумчивый (подсказки, объяснения)</li>
+      <li><code>img/koni/koni-surprised.png</code> — удивлённый "Oh!" (новый материал)</li>
+      <li><code>img/koni/koni-sleeping.png</code> — спит (streak freeze)</li>
+      <li><code>img/koni/koni-icon.png</code> — иконка приложения (квадрат с сакурой)</li>
+      <li><code>img/koni/koni-stickers.png</code> — стикерпак (4 эмоции в одном файле)</li>
+    </ul>
+    <h3 style="margin-top:16px;">Что ещё нужно для MVP</h3>
+    <ul>
+      <li>Дополнительные эмоции: sad/correcting (ошибся), excited (удивлённо-радостный), waving (привет/пока), wink (подмигивает с подсказкой)</li>
+      <li>Lottie-анимация дыхания и моргания для главного экрана</li>
+      <li>Mini-Кони (head only) для inline-подсказок в тексте</li>
+    </ul>
+  </div>
+</div>
+
+</body>
+</html>
