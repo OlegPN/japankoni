@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import PhoneFrame from "@/components/PhoneFrame";
 import { audioFor, getCard, getListenChoices, ReviewCard } from "@/lib/cards";
+import { aiTurn, buildSystemPrompt, ChatMessage, isAiAvailable } from "@/lib/talk";
 import { Deck, dueIds, ensureCard, loadDeck, review, saveDeck } from "@/lib/srs";
 import { bumpStreak, loadProfile, saveProfile } from "@/lib/profile";
 import { Lesson, LESSONS } from "@/lib/lessons";
@@ -34,6 +35,12 @@ export default function Session() {
     } else {
       const next = LESSONS.find(l => !completed.includes(l.id)) ?? LESSONS[0];
       setLesson(next);
+    }
+    // Dev-флаг: ?phase=talk пропускает Review и Lesson, идёт сразу к AI Talk.
+    // Полезно для отладки. В production не используется (но и не мешает).
+    if (typeof window !== "undefined") {
+      const sp = new URLSearchParams(window.location.search).get("phase");
+      if (sp === "talk" || sp === "lesson" || sp === "done") setPhase(sp as Phase);
     }
   }, []);
 
@@ -553,102 +560,95 @@ function LessonPhase({ lesson, onDone }: { lesson: Lesson; onDone: () => void })
 // ============== TALK PHASE ==============
 type Msg =
   | { from: "bot"; jp: string; ru: string }
-  | { from: "user"; jp: string; pitch?: { perfect: boolean; errors: number } };
+  | { from: "user"; text: string };
 
-type TalkOption = { jp: string; ru: string; pitchErrors: number; reply: { jp: string; ru: string } };
-type Turn = { bot: { jp: string; ru: string }; options: TalkOption[] };
 
-// Диалоги, привязанные к теме урока
-const TALK_FOR_LESSON: Record<string, Turn[]> = {
-  "wa-desu": [
-    {
-      bot: { jp: "あなたはがくせいですか？", ru: "Ты студент?" },
-      options: [
-        { jp: "はい、がくせいです。",   ru: "Да, я студент.",  pitchErrors: 0, reply: { jp: "そうですか！", ru: "Вот как!" } },
-        { jp: "いいえ、せんせいです。", ru: "Нет, я учитель.", pitchErrors: 1, reply: { jp: "おしごとですね。", ru: "На работе, значит." } },
-      ],
-    },
-    {
-      bot: { jp: "わたしはコニです。よろしく！", ru: "Я — Кони. Приятно познакомиться!" },
-      options: [
-        { jp: "よろしくおねがいします。", ru: "Взаимно.", pitchErrors: 0, reply: { jp: "がんばろう！", ru: "Давай стараться!" } },
-      ],
-    },
-  ],
-  "wo-direct-object": [
-    {
-      bot: { jp: "なにをたべますか？", ru: "Что ты ешь?" },
-      options: [
-        { jp: "すしをたべます。",   ru: "Я ем суши.",   pitchErrors: 1, reply: { jp: "いいね！おいしいですか？", ru: "Класс! Вкусно?" } },
-        { jp: "たまごをたべます。", ru: "Я ем яйцо.",  pitchErrors: 0, reply: { jp: "あさごはんですね。", ru: "Это завтрак, да?" } },
-        { jp: "おにぎりをたべます。", ru: "Я ем онигири.", pitchErrors: 2, reply: { jp: "おいしそう！", ru: "Выглядит вкусно!" } },
-      ],
-    },
-    {
-      bot: { jp: "もうひとつたべたい？", ru: "Хочешь ещё?" },
-      options: [
-        { jp: "はい、たべたいです。",   ru: "Да, хочу.",     pitchErrors: 0, reply: { jp: "じゃ、もうひとつどうぞ！", ru: "Тогда вот, держи ещё!" } },
-        { jp: "いいえ、おなかいっぱい。", ru: "Нет, я наелся.", pitchErrors: 1, reply: { jp: "またこんどね！", ru: "Тогда в следующий раз!" } },
-      ],
-    },
-  ],
-  "masen-negation": [
-    {
-      bot: { jp: "おさけをのみますか？", ru: "Ты пьёшь сакэ?" },
-      options: [
-        { jp: "はい、のみます。",   ru: "Да, пью.",     pitchErrors: 1, reply: { jp: "そうですか！", ru: "Вот как!" } },
-        { jp: "いいえ、のみません。", ru: "Нет, не пью.", pitchErrors: 0, reply: { jp: "けんこうにいいですね。", ru: "Это полезно для здоровья!" } },
-      ],
-    },
-    {
-      bot: { jp: "にくをたべますか？", ru: "А мясо ешь?" },
-      options: [
-        { jp: "はい、たべます。",   ru: "Да, ем.",       pitchErrors: 0, reply: { jp: "いいね！", ru: "Класс!" } },
-        { jp: "いいえ、たべません。", ru: "Нет, не ем.",  pitchErrors: 1, reply: { jp: "ベジタリアンですか？", ru: "Ты вегетарианец?" } },
-      ],
-    },
-  ],
-};
+// Минимум реплик прежде чем разрешить выйти
+const MIN_TALK_TURNS = 4;
+
+// Стартовая реплика Кони — статичная по теме урока, чтобы не тратить токены и
+// гарантировать, что разговор начнётся в нужном русле.
+function greetingFor(lessonId: string): { jp: string; ru: string } {
+  switch (lessonId) {
+    case "wa-desu":
+      return { jp: "こんにちは！わたしはコニです。あなたは？", ru: "Привет! Я — Кони. А ты?" };
+    case "wo-direct-object":
+      return { jp: "おなかすいた？なにをたべますか？", ru: "Проголодался(ась)? Что будешь есть?" };
+    case "masen-negation":
+      return { jp: "おちゃをのみますか？", ru: "Будешь чай?" };
+    default:
+      return { jp: "こんにちは！はなしましょう。", ru: "Привет! Давай поговорим." };
+  }
+}
 
 function TalkPhase({ lesson, onDone }: { lesson: Lesson; onDone: () => void }) {
-  const turns = useMemo(() => TALK_FOR_LESSON[lesson.id] ?? TALK_FOR_LESSON["wo-direct-object"], [lesson.id]);
-  const [turnIdx, setTurnIdx] = useState(0);
-  const [messages, setMessages] = useState<Msg[]>([{ from: "bot", ...turns[0].bot }]);
+  const [systemPrompt, setSystemPrompt] = useState<string | null>(null);
+  const [messages, setMessages] = useState<Msg[]>([]);
+  const [input, setInput] = useState("");
   const [waiting, setWaiting] = useState(false);
-  const [finished, setFinished] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const scrollerRef = useRef<HTMLDivElement>(null);
+
+  // Строим системный промпт на маунте (один раз)
+  useEffect(() => {
+    const profile = loadProfile();
+    const deck = loadDeck();
+    const sp = buildSystemPrompt(profile, deck, lesson);
+    setSystemPrompt(sp);
+
+    // Стартовая реплика — статичная (без OpenAI), чтоб не тратить токены на старте.
+    // Кони сам инициирует диалог по теме урока.
+    setMessages([{
+      from: "bot",
+      jp: greetingFor(lesson.id).jp,
+      ru: greetingFor(lesson.id).ru,
+    }]);
+  }, [lesson.id]);
 
   useEffect(() => {
     if (scrollerRef.current) scrollerRef.current.scrollTop = scrollerRef.current.scrollHeight;
   }, [messages, waiting]);
 
-  function pick(opt: TalkOption) {
-    if (waiting || finished) return;
-    setMessages(m => [...m, { from: "user", jp: opt.jp, pitch: { perfect: opt.pitchErrors === 0, errors: opt.pitchErrors } }]);
+  async function send() {
+    const text = input.trim();
+    if (!text || waiting || !systemPrompt) return;
+    setInput("");
+    setError(null);
+
+    const userMsg: Msg = { from: "user", text };
+    const newMessages = [...messages, userMsg];
+    setMessages(newMessages);
     setWaiting(true);
 
-    setTimeout(() => {
-      setMessages(m => [...m, { from: "bot", jp: opt.reply.jp, ru: opt.reply.ru }]);
+    try {
+      // Преобразуем историю в формат OpenAI
+      const chatHistory: ChatMessage[] = [
+        { role: "system", content: systemPrompt },
+        ...newMessages.map((m): ChatMessage =>
+          m.from === "bot"
+            ? { role: "assistant", content: JSON.stringify({ jp: m.jp, ru: m.ru }) }
+            : { role: "user", content: m.text }
+        ),
+      ];
+      const reply = await aiTurn(chatHistory);
+      setMessages(m => [...m, { from: "bot", jp: reply.jp, ru: reply.ru }]);
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : String(e);
+      setError(msg);
+    } finally {
       setWaiting(false);
-
-      if (turnIdx + 1 >= turns.length) {
-        setTimeout(() => setFinished(true), 600);
-      } else {
-        setTimeout(() => {
-          const next = turns[turnIdx + 1];
-          setMessages(m => [...m, { from: "bot", ...next.bot }]);
-          setTurnIdx(turnIdx + 1);
-        }, 900);
-      }
-    }, 700);
+    }
   }
 
-  const currentTurn = turns[turnIdx];
-  const progressPct = (turnIdx / turns.length) * 100 + (waiting ? 50 / turns.length : 0);
+  // Прогресс — по количеству реплик пользователя
+  const userTurns = messages.filter(m => m.from === "user").length;
+  const progressPct = Math.min(100, (userTurns / MIN_TALK_TURNS) * 100);
+  const canFinish = userTurns >= MIN_TALK_TURNS;
+  const aiAvailable = isAiAvailable();
 
   return (
     <div className="flex flex-col h-full">
-      <PhaseHeader phaseIdx={2} label={`Фаза 3 · Разговор`} progress={progressPct} />
+      <PhaseHeader phaseIdx={2} label={`Фаза 3 · Разговор · ${userTurns}/${MIN_TALK_TURNS}`} progress={progressPct} />
 
       <div className="flex flex-col items-center pb-3 border-b" style={{ borderColor: "var(--border)" }}>
         <div className="relative w-16 h-16 rounded-full overflow-hidden border-2" style={{ borderColor: "var(--primary)" }}>
@@ -668,25 +668,42 @@ function TalkPhase({ lesson, onDone }: { lesson: Lesson; onDone: () => void }) {
             <span className="inline-block animate-pulse">…</span>
           </div>
         )}
+        {error && (
+          <div className="self-stretch rounded-xl py-2 px-3 text-xs" style={{ background: "#FFE4DC", color: "var(--primary-soft-text)" }}>
+            ⚠️ {error}
+          </div>
+        )}
       </div>
 
-      {!finished && !waiting && messages[messages.length - 1]?.from === "bot" && (
-        <div className="flex flex-col gap-2 fade-in">
-          <div className="text-[11px] uppercase tracking-widest text-muted font-bold text-center mb-1">Выбери ответ</div>
-          {currentTurn.options.map((opt, i) => (
-            <button key={i} onClick={() => pick(opt)}
-              className="rounded-2xl px-3 py-2.5 text-left flex flex-col"
-              style={{ background: "var(--surface)", border: "2px solid var(--border)" }}>
-              <span className="font-semibold text-sm" style={{ fontFamily: '"Noto Sans JP", system-ui' }}>{opt.jp}</span>
-              <span className="text-[11px] text-muted">{opt.ru}</span>
-            </button>
-          ))}
+      {!aiAvailable && (
+        <div className="rounded-xl p-2 mb-2 text-[11px] text-muted text-center" style={{ background: "var(--surface)" }}>
+          AI Talk не настроен. Добавь NEXT_PUBLIC_OPENAI_API_KEY в .env.local.
         </div>
       )}
 
-      {finished && (
-        <button onClick={onDone} className="rounded-xl py-3.5 font-bold text-white mt-3" style={{ background: "var(--primary)" }}>
-          Завершить сессию →
+      <div className="flex gap-2">
+        <input
+          value={input}
+          onChange={e => setInput(e.target.value)}
+          onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); } }}
+          placeholder={aiAvailable ? "Напиши Кони (RU или JP)…" : "AI недоступен"}
+          disabled={!aiAvailable || waiting}
+          className="flex-1 rounded-xl px-3 py-2.5 text-sm outline-none disabled:opacity-50"
+          style={{ background: "var(--surface)", border: "1px solid var(--border)", color: "var(--text)" }}
+        />
+        <button
+          onClick={send}
+          disabled={!input.trim() || waiting || !aiAvailable}
+          className="rounded-xl px-4 font-bold text-white disabled:opacity-40"
+          style={{ background: "var(--primary)" }}
+        >
+          →
+        </button>
+      </div>
+
+      {canFinish && (
+        <button onClick={onDone} className="rounded-xl py-3 font-bold text-white mt-2 text-sm" style={{ background: "var(--success)" }}>
+          ✓ Завершить разговор
         </button>
       )}
     </div>
@@ -696,32 +713,16 @@ function TalkPhase({ lesson, onDone }: { lesson: Lesson; onDone: () => void }) {
 function Message({ msg }: { msg: Msg }) {
   if (msg.from === "bot") {
     return (
-      <div className="self-start max-w-[80%] rounded-2xl py-2 px-3.5 fade-in" style={{ background: "var(--surface)", border: "1px solid var(--border)", borderBottomLeftRadius: 4 }}>
+      <div className="self-start max-w-[85%] rounded-2xl py-2 px-3.5 fade-in" style={{ background: "var(--surface)", border: "1px solid var(--border)", borderBottomLeftRadius: 4 }}>
         <div className="text-sm font-semibold" style={{ fontFamily: '"Noto Sans JP", system-ui' }}>{msg.jp}</div>
-        <div className="text-[11px] text-muted">{msg.ru}</div>
+        <div className="text-[11px] text-muted mt-0.5">{msg.ru}</div>
       </div>
     );
   }
+  // user-сообщение — текст любого языка (что напечатал)
   return (
-    <div className="self-end max-w-[80%] rounded-2xl py-2 px-3.5 fade-in" style={{ background: "var(--primary)", color: "#fff", borderBottomRightRadius: 4 }}>
-      <div className="text-sm font-semibold" style={{ fontFamily: '"Noto Sans JP", system-ui' }}>{msg.jp}</div>
-      {msg.pitch && (
-        <div className="mt-1.5 px-2 py-1.5 rounded-md" style={{ background: "rgba(255,255,255,0.15)", fontSize: 10 }}>
-          {msg.pitch.perfect ? "Pitch accent: идеально 🎯" : `Pitch accent: ${msg.pitch.errors} ${msg.pitch.errors === 1 ? "ошибка" : "ошибок"}`}
-          <svg viewBox="0 0 200 28" style={{ display: "block", width: "100%", height: 26, marginTop: 4 }}>
-            <path d="M0,20 L40,8 L80,8 L120,20 L160,12 L200,12" stroke="rgba(255,255,255,0.4)" strokeWidth="2" fill="none" strokeDasharray="4,2"/>
-            {msg.pitch.perfect ? (
-              <path d="M0,20 L40,8 L80,8 L120,20 L160,12 L200,12" stroke="#fff" strokeWidth="2" fill="none"/>
-            ) : (
-              <>
-                <path d="M0,18 L40,18 L80,8 L120,18 L160,18 L200,12" stroke="#fff" strokeWidth="2" fill="none"/>
-                <circle cx="40" cy="18" r="3" fill="#FFD700"/>
-                {msg.pitch.errors > 1 && <circle cx="120" cy="18" r="3" fill="#FFD700"/>}
-              </>
-            )}
-          </svg>
-        </div>
-      )}
+    <div className="self-end max-w-[85%] rounded-2xl py-2 px-3.5 fade-in" style={{ background: "var(--primary)", color: "#fff", borderBottomRightRadius: 4 }}>
+      <div className="text-sm font-semibold" style={{ fontFamily: '"Noto Sans JP", system-ui' }}>{msg.text}</div>
     </div>
   );
 }
