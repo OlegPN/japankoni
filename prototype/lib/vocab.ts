@@ -28,6 +28,13 @@ export type PoS =
   | "interjection";
 
 export type Category =
+  // M2.3.1 финал — добавляются ниже
+  | "business"       // встречи, контракты
+  | "dishes"         // конкретные блюда
+  | "cooking"        // кулинарные действия
+  | "internet"       // соц.сети, веб
+  | "culture"        // традиции, искусство
+  // (старые ниже)
   | "introduction"   // представление
   | "people-school"  // люди в школе
   | "classroom"      // что в классе
@@ -856,6 +863,146 @@ export const VOCAB: Vocab[] = [
   { id: "vocab:だれか", word: "だれか", romaji: "dareka", ru: "кто-то", partOfSpeech: "pronoun", category: "questions" },
   { id: "vocab:どこか", word: "どこか", romaji: "dokoka", ru: "где-то", partOfSpeech: "pronoun", category: "questions" },
   { id: "vocab:いつか_some", word: "いつか", romaji: "itsukaS", ru: "когда-нибудь", partOfSpeech: "pronoun", category: "questions" },
+
+  // === Block 49: бизнес и встречи (15) ===
+  { id: "vocab:かいぎ", word: "かいぎ", kanji: "会議", romaji: "kaigi", ru: "встреча", meanings: ["совещание"], partOfSpeech: "noun", category: "business" },
+  { id: "vocab:でんわばんごう", word: "でんわばんごう", kanji: "電話番号", romaji: "denwabangou", ru: "номер телефона", partOfSpeech: "noun", category: "business" },
+  { id: "vocab:じゅうしょ", word: "じゅうしょ", kanji: "住所", romaji: "juusho", ru: "адрес", partOfSpeech: "noun", category: "business" },
+  { id: "vocab:しょるい", word: "しょるい", kanji: "書類", romaji: "shorui", ru: "документ", partOfSpeech: "noun", category: "business" },
+  { id: "vocab:けいやく", word: "けいやく", kanji: "契約", romaji: "keiyaku", ru: "контракт", partOfSpeech: "noun", category: "business" },
+  { id: "vocab:きゅうりょう", word: "きゅうりょう", kanji: "給料", romaji: "kyuuryou", ru: "зарплата", partOfSpeech: "noun", category: "business" },
+  { id: "vocab:ボーナス", word: "ボーナス", romaji: "boonasu", ru: "премия", partOfSpeech: "noun", category: "business" },
+  { id: "vocab:やくそく", word: "やくそく", kanji: "約束", romaji: "yakusoku", ru: "обещание", meanings: ["договорённость"], partOfSpeech: "noun", category: "business" },
+  { id: "vocab:けいかく", word: "けいかく", kanji: "計画", romaji: "keikaku", ru: "план", partOfSpeech: "noun", category: "business" },
+  { id: "vocab:もくひょう", word: "もくひょう", kanji: "目標", romaji: "mokuhyou", ru: "цель", partOfSpeech: "noun", category: "business" },
+  { id: "vocab:レポート", word: "レポート", romaji: "repooto", ru: "отчёт", partOfSpeech: "noun", category: "business" },
+  { id: "vocab:スケジュール", word: "スケジュール", romaji: "sukejuuru", ru: "расписание", partOfSpeech: "noun", category: "business" },
+  { id: "vocab:プロジェクト", word: "プロジェクト", romaji: "purojekuto", ru: "проект", partOfSpeech: "noun", category: "business" },
+  { id: "vocab:ミーティング", word: "ミーティング", romaji: "miitingu", ru: "митинг", partOfSpeech: "noun", category: "business" },
+  { id: "vocab:めいし", word: "めいし", kanji: "名刺", romaji: "meishi", ru: "визитка", partOfSpeech: "noun", category: "business" },
+
+  // === Block 50: блюда (15) ===
+  { id: "vocab:ラーメン", word: "ラーメン", romaji: "raamen", ru: "рамен", partOfSpeech: "noun", category: "dishes" },
+  { id: "vocab:うどん", word: "うどん", romaji: "udon", ru: "удон", partOfSpeech: "noun", category: "dishes" },
+  { id: "vocab:そば", word: "そば", romaji: "soba", ru: "соба", partOfSpeech: "noun", category: "dishes" },
+  { id: "vocab:カレー", word: "カレー", romaji: "karee", ru: "карри", partOfSpeech: "noun", category: "dishes" },
+  { id: "vocab:ぎゅうどん", word: "ぎゅうどん", kanji: "牛丼", romaji: "gyuudon", ru: "гюдон (рис с говядиной)", partOfSpeech: "noun", category: "dishes" },
+  { id: "vocab:やきとり", word: "やきとり", kanji: "焼き鳥", romaji: "yakitori", ru: "якитори (курица на шпажках)", partOfSpeech: "noun", category: "dishes" },
+  { id: "vocab:ぎょうざ", word: "ぎょうざ", kanji: "餃子", romaji: "gyouza", ru: "гёдза", partOfSpeech: "noun", category: "dishes" },
+  { id: "vocab:みそしる", word: "みそしる", kanji: "味噌汁", romaji: "misoshiru", ru: "мисо-суп", partOfSpeech: "noun", category: "dishes" },
+  { id: "vocab:さしみ", word: "さしみ", kanji: "刺身", romaji: "sashimi", ru: "сашими", partOfSpeech: "noun", category: "dishes" },
+  { id: "vocab:てんぷら", word: "てんぷら", kanji: "天ぷら", romaji: "tenpura", ru: "темпура", partOfSpeech: "noun", category: "dishes" },
+  { id: "vocab:しょうゆ", word: "しょうゆ", kanji: "醤油", romaji: "shouyu", ru: "соевый соус", partOfSpeech: "noun", category: "dishes" },
+  { id: "vocab:しお", word: "しお", kanji: "塩", romaji: "shio", ru: "соль", partOfSpeech: "noun", category: "dishes" },
+  { id: "vocab:さとう", word: "さとう", kanji: "砂糖", romaji: "satou", ru: "сахар", partOfSpeech: "noun", category: "dishes" },
+  { id: "vocab:こしょう", word: "こしょう", romaji: "koshou", ru: "перец", partOfSpeech: "noun", category: "dishes" },
+  { id: "vocab:バター", word: "バター", romaji: "bataa", ru: "масло (сливочное)", partOfSpeech: "noun", category: "dishes" },
+
+  // === Block 51: кулинарные действия (10) ===
+  { id: "vocab:やく", word: "やく", kanji: "焼く", romaji: "yaku", ru: "жарить", meanings: ["печь"], partOfSpeech: "verb", category: "cooking" },
+  { id: "vocab:にる", word: "にる", kanji: "煮る", romaji: "niru", ru: "варить", partOfSpeech: "verb", category: "cooking" },
+  { id: "vocab:きる_cook", word: "きる", kanji: "切る", romaji: "kiruC", ru: "резать", partOfSpeech: "verb", category: "cooking" },
+  { id: "vocab:まぜる", word: "まぜる", kanji: "混ぜる", romaji: "mazeru", ru: "смешивать", partOfSpeech: "verb", category: "cooking" },
+  { id: "vocab:いれる", word: "いれる", kanji: "入れる", romaji: "ireru", ru: "класть (внутрь)", partOfSpeech: "verb", category: "cooking" },
+  { id: "vocab:だす", word: "だす", kanji: "出す", romaji: "dasu", ru: "доставать (наружу)", partOfSpeech: "verb", category: "cooking" },
+  { id: "vocab:ひやす", word: "ひやす", kanji: "冷やす", romaji: "hiyasu", ru: "охлаждать", partOfSpeech: "verb", category: "cooking" },
+  { id: "vocab:あたためる", word: "あたためる", kanji: "温める", romaji: "atatameru", ru: "разогревать", partOfSpeech: "verb", category: "cooking" },
+  { id: "vocab:りょうりする", word: "りょうりする", kanji: "料理する", romaji: "ryourisuru", ru: "готовить", partOfSpeech: "verb", category: "cooking" },
+  { id: "vocab:あじみする", word: "あじみする", kanji: "味見する", romaji: "ajimisuru", ru: "пробовать на вкус", partOfSpeech: "verb", category: "cooking" },
+
+  // === Block 52: ещё прилагательные (10) ===
+  { id: "vocab:かるい", word: "かるい", kanji: "軽い", romaji: "karui", ru: "лёгкий (по весу)", partOfSpeech: "adj", category: "adj-i" },
+  { id: "vocab:おもい", word: "おもい", kanji: "重い", romaji: "omoi", ru: "тяжёлый", partOfSpeech: "adj", category: "adj-i" },
+  { id: "vocab:うるさい", word: "うるさい", romaji: "urusai", ru: "шумный", meanings: ["надоедливый"], partOfSpeech: "adj", category: "adj-i" },
+  { id: "vocab:かわいい", word: "かわいい", romaji: "kawaii", ru: "милый", partOfSpeech: "adj", category: "adj-i" },
+  { id: "vocab:かっこいい", word: "かっこいい", romaji: "kakkoii", ru: "крутой", meanings: ["красивый (о парне)"], partOfSpeech: "adj", category: "adj-i" },
+  { id: "vocab:すばらしい", word: "すばらしい", kanji: "素晴らしい", romaji: "subarashii", ru: "великолепный", partOfSpeech: "adj", category: "adj-i" },
+  { id: "vocab:ひどい", word: "ひどい", romaji: "hidoi", ru: "ужасный", partOfSpeech: "adj", category: "adj-i" },
+  { id: "vocab:やわらかい", word: "やわらかい", kanji: "柔らかい", romaji: "yawarakai", ru: "мягкий", partOfSpeech: "adj", category: "adj-i" },
+  { id: "vocab:かたい", word: "かたい", kanji: "硬い", romaji: "katai", ru: "твёрдый", partOfSpeech: "adj", category: "adj-i" },
+  { id: "vocab:まるい", word: "まるい", kanji: "丸い", romaji: "marui", ru: "круглый", partOfSpeech: "adj", category: "adj-i" },
+
+  // === Block 53: интернет и соц.сети (10) ===
+  { id: "vocab:ライン", word: "ライン", romaji: "rain", ru: "LINE (мессенджер)", partOfSpeech: "noun", category: "internet" },
+  { id: "vocab:インスタ", word: "インスタ", romaji: "insuta", ru: "Instagram", partOfSpeech: "noun", category: "internet" },
+  { id: "vocab:ツイッター", word: "ツイッター", romaji: "tsuittaa", ru: "Twitter (X)", partOfSpeech: "noun", category: "internet" },
+  { id: "vocab:ユーチューブ", word: "ユーチューブ", romaji: "yuuchuubu", ru: "YouTube", partOfSpeech: "noun", category: "internet" },
+  { id: "vocab:メッセージ", word: "メッセージ", romaji: "messeeji", ru: "сообщение", partOfSpeech: "noun", category: "internet" },
+  { id: "vocab:ダウンロード", word: "ダウンロード", romaji: "daunroodo", ru: "скачать", partOfSpeech: "noun", category: "internet" },
+  { id: "vocab:アップロード", word: "アップロード", romaji: "appuroodo", ru: "загрузить", partOfSpeech: "noun", category: "internet" },
+  { id: "vocab:ログイン", word: "ログイン", romaji: "roguin", ru: "вход (в аккаунт)", partOfSpeech: "noun", category: "internet" },
+  { id: "vocab:パスワード", word: "パスワード", romaji: "pasuwaado", ru: "пароль", partOfSpeech: "noun", category: "internet" },
+  { id: "vocab:アカウント", word: "アカウント", romaji: "akaunto", ru: "аккаунт", partOfSpeech: "noun", category: "internet" },
+
+  // === Block 54: дом расширение (10) ===
+  { id: "vocab:おしいれ", word: "おしいれ", kanji: "押入れ", romaji: "oshiire", ru: "встроенный шкаф", partOfSpeech: "noun", category: "home" },
+  { id: "vocab:ふとん", word: "ふとん", kanji: "布団", romaji: "futon", ru: "футон", partOfSpeech: "noun", category: "home" },
+  { id: "vocab:たな", word: "たな", kanji: "棚", romaji: "tana", ru: "полка", partOfSpeech: "noun", category: "home" },
+  { id: "vocab:ほんだな", word: "ほんだな", kanji: "本棚", romaji: "hondana", ru: "книжная полка", partOfSpeech: "noun", category: "home" },
+  { id: "vocab:カーテン", word: "カーテン", romaji: "kaaten", ru: "занавеска", partOfSpeech: "noun", category: "home" },
+  { id: "vocab:ソファ", word: "ソファ", romaji: "sofa", ru: "диван", partOfSpeech: "noun", category: "home" },
+  { id: "vocab:かべ", word: "かべ", kanji: "壁", romaji: "kabe", ru: "стена", partOfSpeech: "noun", category: "home" },
+  { id: "vocab:ゆか", word: "ゆか", kanji: "床", romaji: "yuka", ru: "пол", partOfSpeech: "noun", category: "home" },
+  { id: "vocab:てんじょう", word: "てんじょう", kanji: "天井", romaji: "tenjou", ru: "потолок", partOfSpeech: "noun", category: "home" },
+  { id: "vocab:かいだん", word: "かいだん", kanji: "階段", romaji: "kaidan", ru: "лестница", partOfSpeech: "noun", category: "home" },
+
+  // === Block 55: семья расширение (8) ===
+  { id: "vocab:おば", word: "おば", romaji: "obaA", ru: "тётя", partOfSpeech: "noun", category: "family" },
+  { id: "vocab:おじ", word: "おじ", romaji: "ojiA", ru: "дядя", partOfSpeech: "noun", category: "family" },
+  { id: "vocab:おばさん_aunt", word: "おばさん", romaji: "obasanA", ru: "тётя (вежл.)", partOfSpeech: "noun", category: "family" },
+  { id: "vocab:おじさん", word: "おじさん", romaji: "ojisan", ru: "дядя (вежл.)", partOfSpeech: "noun", category: "family" },
+  { id: "vocab:いとこ", word: "いとこ", romaji: "itoko", ru: "двоюродный брат/сестра", partOfSpeech: "noun", category: "family" },
+  { id: "vocab:まご", word: "まご", kanji: "孫", romaji: "mago", ru: "внук", meanings: ["внучка"], partOfSpeech: "noun", category: "family" },
+  { id: "vocab:こいびと", word: "こいびと", kanji: "恋人", romaji: "koibito", ru: "возлюбленный", partOfSpeech: "noun", category: "family" },
+  { id: "vocab:しんゆう", word: "しんゆう", kanji: "親友", romaji: "shinyuu", ru: "лучший друг", partOfSpeech: "noun", category: "family" },
+
+  // === Block 56: культура и традиции (15) ===
+  { id: "vocab:まつり", word: "まつり", kanji: "祭り", romaji: "matsuri", ru: "праздник", meanings: ["фестиваль"], partOfSpeech: "noun", category: "culture" },
+  { id: "vocab:はなび", word: "はなび", kanji: "花火", romaji: "hanabi", ru: "фейерверк", partOfSpeech: "noun", category: "culture" },
+  { id: "vocab:きもの", word: "きもの", kanji: "着物", romaji: "kimono", ru: "кимоно", partOfSpeech: "noun", category: "culture" },
+  { id: "vocab:ゆかた", word: "ゆかた", kanji: "浴衣", romaji: "yukata", ru: "юката (летнее кимоно)", partOfSpeech: "noun", category: "culture" },
+  { id: "vocab:すもう", word: "すもう", kanji: "相撲", romaji: "sumou", ru: "сумо", partOfSpeech: "noun", category: "culture" },
+  { id: "vocab:いけばな", word: "いけばな", kanji: "生け花", romaji: "ikebana", ru: "икебана", partOfSpeech: "noun", category: "culture" },
+  { id: "vocab:しょどう", word: "しょどう", kanji: "書道", romaji: "shodou", ru: "каллиграфия", partOfSpeech: "noun", category: "culture" },
+  { id: "vocab:ちゃどう", word: "ちゃどう", kanji: "茶道", romaji: "chadou", ru: "чайная церемония", partOfSpeech: "noun", category: "culture" },
+  { id: "vocab:でんとう", word: "でんとう", kanji: "伝統", romaji: "dentou", ru: "традиция", partOfSpeech: "noun", category: "culture" },
+  { id: "vocab:ぶんか", word: "ぶんか", kanji: "文化", romaji: "bunka", ru: "культура", partOfSpeech: "noun", category: "culture" },
+  { id: "vocab:しゅうきょう", word: "しゅうきょう", kanji: "宗教", romaji: "shuukyou", ru: "религия", partOfSpeech: "noun", category: "culture" },
+  { id: "vocab:かみさま", word: "かみさま", kanji: "神様", romaji: "kamisama", ru: "бог", partOfSpeech: "noun", category: "culture" },
+  { id: "vocab:おしょうがつ", word: "おしょうがつ", kanji: "お正月", romaji: "oshougatsu", ru: "Новый год (япон.)", partOfSpeech: "noun", category: "culture" },
+  { id: "vocab:はなみ", word: "はなみ", kanji: "花見", romaji: "hanami", ru: "ханами (любование сакурой)", partOfSpeech: "noun", category: "culture" },
+  { id: "vocab:せっぷく", word: "せっぷく", kanji: "切腹", romaji: "seppuku", ru: "сэппуку (ритуальное самоубийство)", partOfSpeech: "noun", category: "culture", mnemonic: "Историческая лексика — встречается в фильмах/аниме." },
+
+  // === Block 57: ещё повседневные глаголы (15) ===
+  { id: "vocab:うけとる", word: "うけとる", kanji: "受け取る", romaji: "uketoru", ru: "получать (вещь)", partOfSpeech: "verb", category: "actions" },
+  { id: "vocab:しらべる", word: "しらべる", kanji: "調べる", romaji: "shiraberu", ru: "проверять", meanings: ["искать инфо"], partOfSpeech: "verb", category: "actions" },
+  { id: "vocab:ためす", word: "ためす", kanji: "試す", romaji: "tamesu", ru: "пробовать", partOfSpeech: "verb", category: "actions" },
+  { id: "vocab:えらぶ", word: "えらぶ", kanji: "選ぶ", romaji: "erabu", ru: "выбирать", partOfSpeech: "verb", category: "actions" },
+  { id: "vocab:すすめる", word: "すすめる", kanji: "勧める", romaji: "susumeru", ru: "рекомендовать", partOfSpeech: "verb", category: "actions" },
+  { id: "vocab:きめる", word: "きめる", kanji: "決める", romaji: "kimeru", ru: "решать", partOfSpeech: "verb", category: "actions" },
+  { id: "vocab:かぞえる", word: "かぞえる", kanji: "数える", romaji: "kazoeru", ru: "считать", partOfSpeech: "verb", category: "actions" },
+  { id: "vocab:はかる", word: "はかる", kanji: "測る", romaji: "hakaru", ru: "измерять", partOfSpeech: "verb", category: "actions" },
+  { id: "vocab:うごく", word: "うごく", kanji: "動く", romaji: "ugoku", ru: "двигаться", partOfSpeech: "verb", category: "actions" },
+  { id: "vocab:すむ", word: "すむ", kanji: "住む", romaji: "sumu", ru: "жить (проживать)", partOfSpeech: "verb", category: "actions" },
+  { id: "vocab:そだてる", word: "そだてる", kanji: "育てる", romaji: "sodateru", ru: "растить", partOfSpeech: "verb", category: "actions" },
+  { id: "vocab:なくなる", word: "なくなる", romaji: "nakunaru", ru: "исчезать", meanings: ["умирать (вежл.)"], partOfSpeech: "verb", category: "actions" },
+  { id: "vocab:うまれる", word: "うまれる", kanji: "生まれる", romaji: "umareru", ru: "родиться", partOfSpeech: "verb", category: "actions" },
+  { id: "vocab:しぬ", word: "しぬ", kanji: "死ぬ", romaji: "shinu", ru: "умирать", partOfSpeech: "verb", category: "actions" },
+  { id: "vocab:いきる", word: "いきる", kanji: "生きる", romaji: "ikiru", ru: "жить (быть живым)", partOfSpeech: "verb", category: "actions" },
+
+  // === Block 58: тело и анатомия + расширения (12) ===
+  { id: "vocab:なみだ", word: "なみだ", kanji: "涙", romaji: "namida", ru: "слеза", partOfSpeech: "noun", category: "body" },
+  { id: "vocab:ち_blood", word: "ち", kanji: "血", romaji: "chiB", ru: "кровь", partOfSpeech: "noun", category: "body" },
+  { id: "vocab:ほね", word: "ほね", kanji: "骨", romaji: "hone", ru: "кость", partOfSpeech: "noun", category: "body" },
+  { id: "vocab:ひざ", word: "ひざ", kanji: "膝", romaji: "hiza", ru: "колено", partOfSpeech: "noun", category: "body" },
+  { id: "vocab:ひじ", word: "ひじ", kanji: "肘", romaji: "hiji", ru: "локоть", partOfSpeech: "noun", category: "body" },
+  { id: "vocab:こし", word: "こし", kanji: "腰", romaji: "koshi", ru: "поясница", partOfSpeech: "noun", category: "body" },
+  { id: "vocab:かた_shoulder", word: "かた", kanji: "肩", romaji: "kataS", ru: "плечо", partOfSpeech: "noun", category: "body" },
+  { id: "vocab:むね", word: "むね", kanji: "胸", romaji: "mune", ru: "грудь", partOfSpeech: "noun", category: "body" },
+  { id: "vocab:せなか", word: "せなか", kanji: "背中", romaji: "senaka", ru: "спина (полнее)", partOfSpeech: "noun", category: "body" },
+  { id: "vocab:しんぞう", word: "しんぞう", kanji: "心臓", romaji: "shinzou", ru: "сердце (орган)", partOfSpeech: "noun", category: "body" },
+  { id: "vocab:のうみそ", word: "のうみそ", kanji: "脳味噌", romaji: "noumiso", ru: "мозг", partOfSpeech: "noun", category: "body" },
+  { id: "vocab:はだ", word: "はだ", kanji: "肌", romaji: "hada", ru: "кожа", partOfSpeech: "noun", category: "body" },
 ];
 
 export const VOCAB_BY_ID: Record<string, Vocab> = Object.fromEntries(VOCAB.map(v => [v.id, v]));
