@@ -13,9 +13,8 @@ import { getCurrentPhase } from "@/lib/learning-phase";
 import { loadCompletedLessons } from "@/lib/progress";
 
 // Сцены, которые ещё не сделаны — показываем как «coming soon»
-const COMING_SOON: Array<{ title: string; subtitle: string; image: string }> = [
-  { title: "Рамэн-бар",     subtitle: "Все темы вместе: は・を・です", image: "/scenes/ramen-bar.png" },
-];
+// Сейчас все 8 сцен готовы. Когда добавим новые в M3+, заполним массив снова.
+const COMING_SOON: Array<{ title: string; subtitle: string; image: string }> = [];
 
 export default function AnimeHubPage() {
   const router = useRouter();
@@ -54,7 +53,9 @@ export default function AnimeHubPage() {
           <SceneCard key={scene.id} scene={scene} deck={deck} locked={!unlocked} />
         ))}
 
-        <div className="text-[11px] uppercase tracking-widest text-muted font-bold mt-3 mb-1">Скоро</div>
+        {COMING_SOON.length > 0 && (
+          <div className="text-[11px] uppercase tracking-widest text-muted font-bold mt-3 mb-1">Скоро</div>
+        )}
         {COMING_SOON.map((s, i) => (
           <div key={i} className="rounded-2xl p-3 flex items-center gap-3 opacity-50" style={{ background: "var(--surface)", border: "1px solid var(--border)" }}>
             <div className="w-14 h-14 rounded-xl overflow-hidden flex-shrink-0 relative">
